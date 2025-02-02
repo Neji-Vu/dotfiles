@@ -1,0 +1,30 @@
+format = """
+[](fg:#268bd2)\
+$directory\
+[](fg:#268bd2)\
+$git_branch\
+$git_status\
+$fill\
+[](fg:#268bd2)\
+$time\
+[](fg:#268bd2)\
+$line_break\
+$character"""
+
+[fill]
+symbol = ' '
+
+[directory]
+style = " bg:#268bd2 fg:#002b36"
+format = "[ $path ]($style)"
+truncation_length = 0
+
+[time]
+disabled = false
+style = " bg:#268bd2 fg:#002b36"
+format = "[ $time ]($style)"
+
+[character]
+format = "$symbol "
+success_symbol = "[❯](bold #2aa198)"
+error_symbol = "[](bold #dc322f)"
