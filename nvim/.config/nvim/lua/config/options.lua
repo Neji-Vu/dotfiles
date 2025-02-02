@@ -30,11 +30,10 @@ vim.cmd([[let &t_Ce = "\e[4:0m"]])
 
 vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
 
--- TODO:
-if myfunc.OSname() == "MacOS" then
-	opt.shell = "fish"
+if myfunc.OSname() == "OSX" then
+  opt.shell = "fish"
 elseif myfunc.OSname() == "Windows" then
-	opt.shell = "pwsh"
-	opt.shellcmdflag = "-nologo -noprofile -ExecutionPolicy RemoteSigned -command"
-	opt.shellxquote = ""
+  opt.shell = "pwsh"
+  opt.shellcmdflag = "-nologo -noprofile -ExecutionPolicy RemoteSigned -command"
+  opt.shellxquote = ""
 end

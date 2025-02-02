@@ -1,4 +1,3 @@
-set -Ux STARSHIP_CONFIG ~/.config/starship/starship.toml
 function starship_transient_prompt_func
     starship module character
 end

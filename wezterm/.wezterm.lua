@@ -1,4 +1,4 @@
-function changeBackground(conf, img_path)
+local function changeBackground(conf, img_path)
 	conf.background = {
 		{
 			source = {
@@ -52,10 +52,11 @@ config.window_padding = {
 	top = 0,
 }
 
-local bg_path = os.getenv("LOCALAPPDATA") .. "/nvim/bg_imgs/piano_girl.png"
+local dir_path = OSname() == "win" and os.getenv("LOCALAPPDATA") or os.getenv("HOME") .. "/.config"
+local bg_path = dir_path .. "/nvim/bg_imgs/piano_girl.png"
 changeBackground(config, bg_path)
 
-config.default_prog = { OSname() == "win" and "pwsh" or "fish" }
+config.default_prog = { OSname() == "win" and "pwsh" or "/opt/homebrew/bin/fish" }
 
 local toggle_transparency = {
 	brief = "Toggle terminal transparency",
