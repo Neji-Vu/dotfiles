@@ -1,7 +1,7 @@
 format = """
 [](fg:#268bd2)\
 $directory\
-[](fg:#268bd2)\
+[](fg:#268bd2 bg:#eee8d5)\
 $git_branch\
 $git_status\
 $fill\
@@ -15,13 +15,26 @@ $character"""
 symbol = ' '
 
 [directory]
-style = " bg:#268bd2 fg:#002b36"
+style = " bg:#268bd2 fg:#073642"
 format = "[ $path ]($style)"
 truncation_length = 0
 
+[git_branch]
+symbol = ""
+style = "bg:#eee8d5 fg:#073642"
+format = "[ $symbol $branch ]($style)"
+
+[git_status]
+style = "bg:#eee8d5 fg:#073642"
+ahead = '[](fg:#eee8d5 bg:#c792ea)[ 󰻭 \(+$count\) ](bg:#c792ea fg:#073642)[](fg:#c792ea)'
+staged = '[](fg:#eee8d5 bg:#c5e478)[ 󰻭 \(+$count\) ](bg:#c5e478 fg:#073642)[](fg:#c5e478)'
+modified = '[](fg:#eee8d5 bg:#b58900)[ 󰷫 \(+$count\) ](bg:#b58900 fg:#eee8d5)[](fg:#b58900)'
+typechanged = "|"
+format = "[$all_status$ahead_behind]($style)"
+
 [time]
 disabled = false
-style = " bg:#268bd2 fg:#002b36"
+style = " bg:#268bd2 fg:#073642"
 format = "[ $time ]($style)"
 
 [character]
