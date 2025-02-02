@@ -17,7 +17,7 @@ symbol = ' '
 
 [directory]
 style = " bg:#268bd2 fg:#073642"
-format = "[ $path ]($style)"
+format = "[$path ]($style)"
 truncation_length = 0
 
 [git_branch]
