@@ -17,8 +17,9 @@ symbol = ' '
 
 [directory]
 style = " bg:#268bd2 fg:#073642"
+fish_style_pwd_dir_length = 1
 format = "[$path ]($style)"
-truncation_length = 0
+truncation_length = 3
 
 [git_branch]
 symbol = ""
