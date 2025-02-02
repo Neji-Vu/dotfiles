@@ -1,9 +1,10 @@
 format = """
 [](fg:#268bd2)\
 $directory\
-[](fg:#268bd2 bg:#eee8d5)\
+[](fg:#268bd2 bg:#bbc4c4)\
 $git_branch\
 $git_status\
+[](fg:#bbc4c4)\
 $fill\
 [](fg:#268bd2)\
 $time\
@@ -21,15 +22,14 @@ truncation_length = 0
 
 [git_branch]
 symbol = ""
-style = "bg:#eee8d5 fg:#073642"
+style = "bg:#bbc4c4 fg:#073642"
 format = "[ $symbol $branch ]($style)"
 
 [git_status]
-style = "bg:#eee8d5 fg:#073642"
-ahead = '[](fg:#eee8d5 bg:#c792ea)[ 󰻭 \(+$count\) ](bg:#c792ea fg:#073642)[](fg:#c792ea)'
-staged = '[](fg:#eee8d5 bg:#c5e478)[ 󰻭 \(+$count\) ](bg:#c5e478 fg:#073642)[](fg:#c5e478)'
-modified = '[](fg:#eee8d5 bg:#b58900)[ 󰷫 \(+$count\) ](bg:#b58900 fg:#eee8d5)[](fg:#b58900)'
-typechanged = "|"
+style = "bg:#bbc4c4 fg:#073642"
+ahead = '[](fg:#bbc4c4 bg:#c792ea)[  \(+$count\) ](bg:#c792ea fg:#073642)[](fg:#c792ea bg:#bbc4c4)'
+staged = '[](fg:#bbc4c4 bg:#c5e478)[ 󰻭 \(+$count\) ](bg:#c5e478 fg:#073642)[](fg:#c5e478 bg:#bbc4c4)'
+modified = '[](fg:#bbc4c4 bg:#b38600)[ 󰷫 \(+$count\) ](bg:#b38600 fg:#eee8d5)[](fg:#b38600 bg:#bbc4c4)'
 format = "[$all_status$ahead_behind]($style)"
 
 [time]
