@@ -19,7 +19,7 @@ symbol = ' '
 style = " bg:#268bd2 fg:#073642"
 fish_style_pwd_dir_length = 1
 format = "[$path ]($style)"
-truncation_length = 3
+truncation_length = 2
 
 [git_branch]
 symbol = ""
@@ -29,6 +29,7 @@ format = "[ $symbol $branch ]($style)"
 [git_status]
 style = "bg:#bbc4c4 fg:#073642"
 ahead = '[](fg:#bbc4c4 bg:#c792ea)[  \(+$count\) ](bg:#c792ea fg:#073642)[](fg:#c792ea bg:#bbc4c4)'
+untracked = '[](fg:#bbc4c4 bg:#d65945)[  \(+$count\) ](bg:#d65945 fg:#eee8d5)[](fg:#d65945 bg:#bbc4c4)'
 staged = '[](fg:#bbc4c4 bg:#c5e478)[ 󰻭 \(+$count\) ](bg:#c5e478 fg:#073642)[](fg:#c5e478 bg:#bbc4c4)'
 modified = '[](fg:#bbc4c4 bg:#b38600)[ 󰷫 \(+$count\) ](bg:#b38600 fg:#eee8d5)[](fg:#b38600 bg:#bbc4c4)'
 format = "[$all_status$ahead_behind]($style)"

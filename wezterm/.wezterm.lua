@@ -9,7 +9,7 @@ local function changeBackground(conf, img_path)
 			horizontal_align = "Center",
 			vertical_align = "Middle",
 			hsb = {
-				brightness = 0.5,
+				brightness = 0.7,
 			},
 		},
 		{
@@ -19,7 +19,7 @@ local function changeBackground(conf, img_path)
 			},
 			height = "100%",
 			width = "100%",
-			opacity = 0.8,
+			opacity = 0.85,
 		},
 	}
 end
@@ -66,9 +66,9 @@ local toggle_transparency = {
 
 		if not overrides.window_background_opacity or overrides.window_background_opacity == 1 then
 			-- Set opacity to 0.8 (semi-transparent) and remove background image
-			overrides.window_background_opacity = 0.5
+			overrides.window_background_opacity = 0.87
 			if OSname == "mac" then
-				overrides.macos_window_background_blur = 40
+				overrides.macos_window_background_blur = 50
 			end
 			overrides.background = {}
 		else
