@@ -21,11 +21,6 @@ require("lazy").setup({
       "LazyVim/LazyVim",
       import = "lazyvim.plugins",
       opts = { colorscheme = "solarized-osaka" },
-      -- config = function()
-      --   vim.cmd("colorscheme solarized-osaka")
-      --   vim.api.nvim_set_hl(0, "LineNr", { fg = "#804700" })
-      --   vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ef5c00" })
-      -- end,
     },
     { import = "lazyvim.plugins.extras.linting.eslint" },
     { import = "lazyvim.plugins.extras.formatting.prettier" },
