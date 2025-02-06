@@ -10,7 +10,7 @@ return {
   keys = {
     -- List all files in the current directory, except files listed in .gitignore
     {
-      "<leader><space>",
+      ";f",
       function()
         local builtin = require("telescope.builtin")
         builtin.find_files({
