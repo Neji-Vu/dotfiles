@@ -6,10 +6,10 @@ local function changeBackground(conf, img_path)
 			},
 			repeat_x = "NoRepeat",
 			repeat_y = "NoRepeat",
-			horizontal_align = "Center",
+			horizontal_align = "Right",
 			vertical_align = "Middle",
 			hsb = {
-				brightness = 0.7,
+				brightness = 0.4,
 			},
 		},
 		{
@@ -53,7 +53,7 @@ config.window_padding = {
 }
 
 local dir_path = OSname() == "win" and os.getenv("LOCALAPPDATA") or os.getenv("HOME") .. "/.config"
-local bg_path = dir_path .. "/nvim/bg_imgs/piano_girl.png"
+local bg_path = dir_path .. "/nvim/bg_imgs/blue.png"
 changeBackground(config, bg_path)
 
 config.default_prog = { OSname() == "win" and "pwsh" or "/opt/homebrew/bin/fish" }
