@@ -6,8 +6,15 @@ return {
 
     dapui.setup()
 
-    vim.keymap.set("n", "<Leader>dc", dap.continue)
-    vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint)
+    vim.keymap.set("n", "<Leader>dn", "<cmd>DapNew<CR>", { desc = "Launch New session" })
+    vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+    vim.keymap.set("n", "<Leader>dT", dap.clear_breakpoints, { desc = "Clear breakpoints" })
+    vim.keymap.set("n", "<Leader>ds", "<cmd>DapTerminate<CR>", { desc = "Close session" })
+
+    vim.keymap.set("n", "<Leader>dc", dap.continue, { desc = "Continue" })
+    vim.keymap.set("n", "<Leader>do", dap.step_over, { desc = "Step over" })
+    vim.keymap.set("n", "<Leader>di", dap.step_into, { desc = "Step into" })
+    vim.keymap.set("n", "<Leader>de", dap.step_out, { desc = "Step out" })
 
     dap.listeners.before.attach.dapui_config = function()
       dapui.open()
@@ -44,6 +51,7 @@ return {
         end,
         cwd = "${workspaceFolder}",
         stopOnEntry = false,
+        runInTerminal = true,
         preLaunchTask = function()
           local compile_cmd = "g++ -g -std=c++11 " .. vim.fn.expand("%") .. " -o output/" .. vim.fn.expand("%:r") -- Modify as needed
           print("Compiling: " .. compile_cmd)
