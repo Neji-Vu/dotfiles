@@ -8,7 +8,7 @@
 using namespace std;
 #define ll long long
 
-int main (int argc, char *argv[]) {
+int main() {
 
 	return 0;
 }
