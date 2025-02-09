@@ -3,7 +3,7 @@ return {
   opts = {
     ensure_installed = {
       "clangd", -- for c++
-      -- "clang-format",
+      "clang-format",
       "codelldb",
       "stylua",
       "luacheck",
