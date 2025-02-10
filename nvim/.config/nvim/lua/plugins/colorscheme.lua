@@ -8,7 +8,7 @@ return {
       -- floats = "transparent",
       sidebars = "transparent",
     }
-    opts.sidebars = { "terminal" }
+    -- opts.sidebars = { "terminal", "noice" }
     opts.on_highlights = function(hl, c)
       hl.CursorLineNr = { fg = c.cyan } -- The current number line
       hl.LineNr = { fg = c.cyan700 } -- The other number lines
@@ -16,6 +16,8 @@ return {
       hl.Visual = { bg = c.cyan700 }
       hl.WinSeparator = { fg = c.cyan700 }
       hl.SnacksDashboardHeader = { fg = c.cyan500 } -- The header color of snacks
+      hl.TelescopeBorder = { fg = c.cyan700, bg = c.bg_float }
+      hl.WhichKeyBorder = { fg = c.cyan700, bg = c.bg_float }
     end
   end,
 }
