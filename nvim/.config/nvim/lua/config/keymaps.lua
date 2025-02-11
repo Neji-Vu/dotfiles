@@ -33,20 +33,6 @@ keymap.set("i", "<A-K>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 keymap.set("v", "<A-J>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 keymap.set("v", "<A-K>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
--- esc and c-[ to escape terminal mode
-function _G.set_terminal_keymaps()
-  local term_opts = { buffer = 0 }
-  vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], term_opts)
-  vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], term_opts)
-  vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], term_opts)
-  vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], term_opts)
-  vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], term_opts)
-end
-
-vim.api.nvim_create_autocmd("TermOpen", {
-  pattern = [[term://*]],
-  callback = set_terminal_keymaps,
-})
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
   vim.diagnostic.goto_next()

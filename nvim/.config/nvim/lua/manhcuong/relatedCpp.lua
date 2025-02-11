@@ -18,14 +18,14 @@ end
 
 function M.RunCppFile()
   local command = ":split<CR>:te ./output/%:r<CR>i"
-  vim.keymap.set("n", "<leader>ce", command, { desc = "Run cpp file", noremap = true, silent = true })
+  vim.keymap.set("n", "<leader>ce", command, { desc = "Execute cpp file", noremap = true, silent = true })
 
   local command_file = ":split<CR>:te ./output/%:r < output/input.txt<CR>i"
   vim.keymap.set(
     "n",
     "<leader>cE",
     command_file,
-    { desc = "Run cpp file with input file", noremap = true, silent = true }
+    { desc = "Execute cpp file with input file", noremap = true, silent = true }
   )
 end
 
