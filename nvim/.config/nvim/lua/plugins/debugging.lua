@@ -55,8 +55,8 @@ return {
         terminal = "integrated",
         stdio = { myfunc.check_input_file(), nil, nil },
         preLaunchTask = function()
-          local flag = myfunc.osname() == "Windows" and "-f" or "-p"
-          local suppress = myfunc.osname() == "Windows" and "$null" or "/dev/null"
+          local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
+          local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
           local dir = string.format("mkdir %s output > %s", flag, suppress)
           os.execute(dir)
 

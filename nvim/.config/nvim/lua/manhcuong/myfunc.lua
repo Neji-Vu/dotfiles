@@ -1,6 +1,6 @@
 local M = {}
 
-function M.osname()
+function M.os_name()
   local osname
 
   -- ask LuaJIT first

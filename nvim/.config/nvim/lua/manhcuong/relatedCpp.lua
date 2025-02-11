@@ -7,8 +7,8 @@ function M.BuildCppFile()
   local gcc = "g++ -o output/%:r % -std=c++11"
 
   -- A command to make the output folder holding the executable files
-  local flag = myfunc.osname() == "Windows" and "-f" or "-p"
-  local suppress = myfunc.osname() == "Windows" and "$null" or "/dev/null"
+  local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
+  local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
   local dir = string.format("mkdir %s output > %s", flag, suppress)
 
   -- the final command to build cpp in the new buffer
@@ -18,7 +18,15 @@ end
 
 function M.RunCppFile()
   local command = ":split<CR>:te ./output/%:r<CR>i"
-  vim.keymap.set("n", "<leader>8", command, { desc = "Run cpp file", noremap = true, silent = true })
+  vim.keymap.set("n", "<leader>ce", command, { desc = "Run cpp file", noremap = true, silent = true })
+
+  local command_file = ":split<CR>:te ./output/%:r < output/input.txt<CR>i"
+  vim.keymap.set(
+    "n",
+    "<leader>cE",
+    command_file,
+    { desc = "Run cpp file with input file", noremap = true, silent = true }
+  )
 end
 
 function M.GenerateCppFile()
