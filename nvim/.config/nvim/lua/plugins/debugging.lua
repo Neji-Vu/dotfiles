@@ -3,6 +3,7 @@ return {
   dependencies = { "rcarriga/nvim-dap-ui", "nvim-neotest/nvim-nio" },
   config = function()
     local dap, dapui = require("dap"), require("dapui")
+    local myfunc = require("manhcuong.myfunc")
 
     dapui.setup()
 
@@ -51,10 +52,17 @@ return {
         end,
         cwd = "${workspaceFolder}",
         stopOnEntry = false,
-        runInTerminal = true,
+        terminal = "integrated",
+        stdio = { myfunc.check_input_file(), nil, nil },
         preLaunchTask = function()
+          local flag = myfunc.osname() == "Windows" and "-f" or "-p"
+          local suppress = myfunc.osname() == "Windows" and "$null" or "/dev/null"
+          local dir = string.format("mkdir %s output > %s", flag, suppress)
+          os.execute(dir)
+
           local compile_cmd = "g++ -g -std=c++11 " .. vim.fn.expand("%") .. " -o output/" .. vim.fn.expand("%:r") -- Modify as needed
-          print("Compiling: " .. compile_cmd)
+          local mess = myfunc.check_input_file() == nil and "No input file - " or ""
+          print(mess .. "Compiling: " .. compile_cmd)
           os.execute(compile_cmd)
         end,
       },
