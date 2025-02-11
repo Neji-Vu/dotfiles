@@ -56,7 +56,7 @@ local dir_path = OSname() == "win" and os.getenv("LOCALAPPDATA") or os.getenv("H
 local bg_path = dir_path .. "/nvim/bg_imgs/blue.png"
 changeBackground(config, bg_path)
 
-config.default_prog = { OSname() == "win" and "pwsh" or "/opt/homebrew/bin/fish" }
+config.default_prog = { OSname() == "win" and "wsl" or "/opt/homebrew/bin/fish" }
 
 local toggle_transparency = {
 	brief = "Toggle terminal transparency",
