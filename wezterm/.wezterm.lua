@@ -88,4 +88,6 @@ wezterm.on("augment-command-palette", function()
 	return { toggle_transparency }
 end)
 
+-- Using Ctrl-Space in vim
+-- need to disable Ctrl Space selection of keyboard setting (input sources) on MacOS
 return config
