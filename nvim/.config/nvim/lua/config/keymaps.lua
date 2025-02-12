@@ -34,6 +34,6 @@ keymap.set("v", "\\j", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { 
 keymap.set("v", "\\k", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- Diagnostics
-keymap.set("n", "<C-t>", function()
+keymap.set("n", "<C-y>", function()
   vim.diagnostic.goto_next()
 end, opts)
