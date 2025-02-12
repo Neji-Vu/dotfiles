@@ -28,6 +28,8 @@ keymap.set("n", "se", "<C-w>x") --exchange current window  with next one
 -- move selected lines
 keymap.set("n", "\\j", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
 keymap.set("n", "\\k", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
+keymap.set("i", "\\j", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
+keymap.set("i", "\\k", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 keymap.set("v", "\\j", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 keymap.set("v", "\\k", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
