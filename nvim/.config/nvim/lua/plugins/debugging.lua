@@ -17,6 +17,11 @@ return {
     vim.keymap.set("n", "<Leader>di", dap.step_into, { desc = "Step into" })
     vim.keymap.set("n", "<Leader>de", dap.step_out, { desc = "Step out" })
 
+    -- Eval var under cursor
+    vim.keymap.set("n", "<leader>d?", function()
+      require("dapui").eval(nil, { enter = true })
+    end)
+
     dap.listeners.before.attach.dapui_config = function()
       dapui.open()
     end
