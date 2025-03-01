@@ -64,6 +64,7 @@ return {
           local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
           local dir = string.format("mkdir %s output > %s", flag, suppress)
           os.execute(dir)
+          vim.cmd("w")
 
           local compile_cmd = "g++ -g -std=c++11 " .. vim.fn.expand("%") .. " -o output/" .. vim.fn.expand("%:r") -- Modify as needed
           local mess = myfunc.check_input_file() == nil and "No input file - " or ""
