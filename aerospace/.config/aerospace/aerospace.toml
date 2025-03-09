@@ -121,7 +121,7 @@ run = "move-node-to-workspace C"
 
 [[on-window-detected]]
 if.app-id = 'com.electron.min'
-run = "move-node-to-workspace B"
+run = "move-node-to-workspace C"
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
@@ -130,3 +130,7 @@ run = "move-node-to-workspace B"
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = "move-node-to-workspace D"
+
+[[on-window-detected]]
+if.app-id = 'notion.id'
+run = "move-node-to-workspace W"
