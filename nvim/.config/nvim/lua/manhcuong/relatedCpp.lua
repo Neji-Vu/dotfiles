@@ -4,7 +4,7 @@ local myfunc = require("manhcuong.myfunc")
 
 function M.BuildCppFile()
   -- A command to build cpp file
-  local gcc = "g++ -o output/%:r % -std=c++11"
+  local gcc = "g++ -o output/%:r % -std=c++17"
 
   -- A command to make the output folder holding the executable files
   local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
