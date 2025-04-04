@@ -11,6 +11,7 @@ opt.foldlevelstart = 99
 opt.wildmenu = true
 opt.wildmode = { "list:longest", "full", "full" }
 opt.wrap = false
+opt.colorcolumn = "100"
 
 opt.smartcase = true
 opt.ignorecase = true
