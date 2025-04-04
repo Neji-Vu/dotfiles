@@ -12,6 +12,7 @@ return {
           -- TabWidth = 4
           -- UseTab = Always
           -- AllowShortFunctionsOnASingleLine: Empty
+          -- ColumnLimit: 95
           "--style=file:"
             .. vim.fn.stdpath("config")
             .. "/template/.clang-format",
