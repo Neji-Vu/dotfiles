@@ -8,8 +8,8 @@ discipline.cowboy()
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "cpp",
   callback = function()
-    cpp.BuildCppFile() -- press <leader>7 to build cpp file
-    cpp.RunCppFile() -- press <leader>8 to run cpp file
+    cpp.BuildKeymap() -- press <leader>cb to build cpp file
+    cpp.RunKeymap() -- press <leader>ce or <leader>cE to run cpp file
   end,
 })
 
