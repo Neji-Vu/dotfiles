@@ -81,6 +81,74 @@ function M.RunWithoutInputFile()
   end
 end
 
+function M.CreateInOutWindow()
+  -- show the input and output file
+  local exists_input, win_input = myfunc.is_file_open_in_window("output/input.txt")
+  local exists_output, win_output = myfunc.is_file_open_in_window("output/output.txt")
+  local keep_height_output_win_id = vim.api.nvim_get_current_win()
+
+  if exists_input or exists_output then
+    -- exists input and output window, do nothing
+    if exists_output and exists_input then
+      return win_output
+    end
+
+    -- exist input window
+    if exists_input and win_input ~= nil then
+      vim.api.nvim_set_current_win(win_input)
+      vim.cmd("vs output/output.txt")
+      keep_height_output_win_id = vim.api.nvim_get_current_win()
+    end
+
+    -- exist output window
+    if exists_output and win_output ~= nil then
+      vim.api.nvim_set_current_win(win_output)
+      keep_height_output_win_id = vim.api.nvim_get_current_win()
+      vim.cmd("vs output/input.txt")
+      vim.cmd("wincmd x")
+    end
+  else
+    -- no window exists
+    vim.cmd("sp output/input.txt")
+    vim.cmd("vs output/output.txt")
+    keep_height_output_win_id = vim.api.nvim_get_current_win()
+  end
+
+  -- keep the input/output window height fixed
+  vim.wo[keep_height_output_win_id].winfixheight = true
+  vim.api.nvim_win_set_height(keep_height_output_win_id, 12)
+
+  -- move the cursor to the main window
+  vim.cmd("wincmd k")
+  return keep_height_output_win_id -- return win_id of output window
+end
+
+function M.RunWithInputFile()
+  -- file exists
+  if vim.fn.filereadable("output/input.txt") == 1 then
+    -- run execution file
+    os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+
+    -- create and change the window
+    local out_win = M.CreateInOutWindow()
+
+    -- reload the content of output window
+    local current_win = vim.api.nvim_get_current_win()
+    if out_win ~= nil then
+      vim.api.nvim_set_current_win(out_win)
+    end
+    vim.cmd("edit") -- force reload from disk
+    vim.api.nvim_set_current_win(current_win) -- return to previous window
+  else
+    -- does not exist
+    print("Input file does not exist!")
+
+    -- os.execute("touch output/input.txt")
+    vim.cmd("sp output/input.txt")
+    vim.cmd("resize 12")
+  end
+end
+
 ------------------------------------------------------------------------
 
 function M.BuildKeymap()
@@ -94,31 +162,8 @@ function M.RunKeymap()
     M.RunWithoutInputFile()
   end, { desc = "Execute cpp file", noremap = true, silent = true })
 
-  local command_file = ":split<CR>:te ./output/%:r < output/input.txt<CR>i"
   vim.keymap.set("n", "<leader>cE", function()
-    local input_file = "output/input.txt"
-    if vim.fn.filereadable(input_file) == 1 then
-      --- file exists
-      print("exist")
-
-      -- run execution file
-      os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
-
-      -- show the input and output file
-      vim.cmd("sp output/input.txt")
-      vim.cmd("vs output/output.txt")
-      vim.cmd("resize 12")
-
-      -- move the cursor to the main window
-      vim.cmd("wincmd k")
-    else
-      -- does not exist
-      print("Input file does not exist!")
-
-      -- os.execute("touch output/input.txt")
-      vim.cmd("sp output/input.txt")
-      vim.cmd("resize 12")
-    end
+    M.RunWithInputFile()
   end, { desc = "Execute cpp file with input file", noremap = true, silent = true })
 end
 
