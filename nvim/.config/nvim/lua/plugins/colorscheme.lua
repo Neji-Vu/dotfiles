@@ -13,8 +13,8 @@ return {
       hl.CursorLineNr = { fg = c.cyan } -- The current number line
       hl.LineNr = { fg = c.cyan700 } -- The other number lines
       -- hl.cursorline = { fg = c.base04 } -- the other number lines
-      hl.Visual = { bg = c.cyan700 }
-      hl.WinSeparator = { fg = c.cyan700 }
+      hl.Visual = { bg = c.cyan700 } -- The color of Visual mode
+      hl.WinSeparator = { fg = c.cyan500 }
       hl.SnacksDashboardHeader = { fg = c.cyan500 } -- The header color of snacks
       hl.TelescopeBorder = { fg = c.cyan700, bg = c.bg_float }
       hl.WhichKeyBorder = { fg = c.cyan700, bg = c.bg_float }
