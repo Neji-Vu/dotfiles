@@ -100,10 +100,24 @@ function M.RunKeymap()
     if vim.fn.filereadable(input_file) == 1 then
       --- file exists
       print("exist")
+
+      -- run execution file
+      os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+
+      -- show the input and output file
+      vim.cmd("sp output/input.txt")
+      vim.cmd("vs output/output.txt")
+      vim.cmd("resize 12")
+
+      -- move the cursor to the main window
+      vim.cmd("wincmd k")
     else
       -- does not exist
-      print("doest not exist")
-      os.execute("touch output/input.txt")
+      print("Input file does not exist!")
+
+      -- os.execute("touch output/input.txt")
+      vim.cmd("sp output/input.txt")
+      vim.cmd("resize 12")
     end
   end, { desc = "Execute cpp file with input file", noremap = true, silent = true })
 end
