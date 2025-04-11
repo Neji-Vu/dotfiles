@@ -61,8 +61,6 @@ function M.RunWithoutInputFile()
   if vim.bo.modified then
     -- A command to make the output folder holding the executable files
     os.execute(M.MakeDirOSCmd())
-
-    -- Split window to show the output of build result
     vim.cmd("w")
 
     -- build and show output to message
@@ -123,22 +121,44 @@ function M.CreateInOutWindow()
   return keep_height_output_win_id -- return win_id of output window
 end
 
+function M.RunInNewInputOutputWindow()
+  -- run execution file
+  os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+
+  -- create and change the window
+  local out_win = M.CreateInOutWindow()
+
+  -- reload the content of output window
+  local current_win = vim.api.nvim_get_current_win()
+  if out_win ~= nil then
+    vim.api.nvim_set_current_win(out_win)
+  end
+  vim.cmd("edit") -- force reload from disk
+  vim.api.nvim_set_current_win(current_win) -- return to previous window
+end
+
 function M.RunWithInputFile()
   -- file exists
   if vim.fn.filereadable("output/input.txt") == 1 then
-    -- run execution file
-    os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+    -- File is not saved
+    if vim.bo.modified then
+      -- Split window to show the output of build result
+      vim.cmd("w")
 
-    -- create and change the window
-    local out_win = M.CreateInOutWindow()
-
-    -- reload the content of output window
-    local current_win = vim.api.nvim_get_current_win()
-    if out_win ~= nil then
-      vim.api.nvim_set_current_win(out_win)
+      -- build and show output to message
+      vim.fn.jobstart(M.BuildCppFileInOS(), {
+        on_exit = function(_, code)
+          if code == 0 then
+            print("✅ Build successful!")
+            M.RunInNewInputOutputWindow()
+          else
+            print("❌ Build failed!")
+          end
+        end,
+      })
+    else
+      M.RunInNewInputOutputWindow()
     end
-    vim.cmd("edit") -- force reload from disk
-    vim.api.nvim_set_current_win(current_win) -- return to previous window
   else
     -- does not exist
     print("Input file does not exist!")
