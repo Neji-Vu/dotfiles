@@ -23,7 +23,8 @@ keymap.set("n", "sj", "<C-w>j")
 keymap.set("n", "sl", "<C-w>l")
 keymap.set("n", "sc", "<C-w>q") -- close the current window without deleting the buffer
 keymap.set("n", "sx", "<Cmd>:bd<CR>") -- close and deleting the current window and buffer (without saving)
-keymap.set("n", "se", "<C-w>x") --exchange current window  with next one
+keymap.set("n", "se", "<C-w>x") -- exchange current window  with next one
+keymap.set("n", "so", ":only") -- close all other windows (without closing its buffers)
 
 -- move selected lines
 keymap.set("n", "\\j", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
