@@ -29,4 +29,23 @@ function M.check_input_file()
   end
 end
 
+function M.close_wins_and_bufs()
+  local current_win = vim.api.nvim_get_current_win()
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Step 1: Loop through all windows
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if win ~= current_win then
+      -- Step 2: Close the window
+      vim.api.nvim_win_close(win, true)
+
+      -- Step 3: Delete the buffer if it's not used elsewhere
+      if buf ~= current_buf and vim.fn.buflisted(buf) == 1 then
+        vim.cmd("bdelete " .. buf)
+      end
+    end
+  end
+end
+
 return M
