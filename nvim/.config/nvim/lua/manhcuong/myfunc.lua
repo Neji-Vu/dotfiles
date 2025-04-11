@@ -48,4 +48,18 @@ function M.close_wins_and_bufs()
   end
 end
 
+function M.is_file_open_in_window(filepath)
+  local target = vim.fn.fnamemodify(filepath, ":p") -- normalize full path
+
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local name = vim.api.nvim_buf_get_name(buf)
+    if vim.fn.fnamemodify(name, ":p") == target then
+      return true, win -- file is open in this window
+    end
+  end
+
+  return false, nil -- file not open in any window
+end
+
 return M
