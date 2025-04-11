@@ -24,7 +24,10 @@ keymap.set("n", "sl", "<C-w>l")
 keymap.set("n", "sc", "<C-w>q") -- close the current window without deleting the buffer
 keymap.set("n", "sx", "<Cmd>:bd<CR>") -- close and deleting the current window and buffer (without saving)
 keymap.set("n", "se", "<C-w>x") -- exchange current window  with next one
-keymap.set("n", "so", ":only") -- close all other windows (without closing its buffers)
+keymap.set("n", "sO", ":only<CR>") -- close all other windows (without closing its buffers)
+keymap.set("n", "so", function()
+  require("manhcuong.myfunc").close_wins_and_bufs()
+end) -- close all other windows and their buffers
 
 -- move selected lines
 keymap.set("n", "\\j", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
