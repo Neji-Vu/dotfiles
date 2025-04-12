@@ -121,9 +121,23 @@ function M.CreateInOutWindow()
   return keep_height_output_win_id -- return win_id of output window
 end
 
+function M.RunWithTimeout(timeout_ms)
+  local cmd = "./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt"
+
+  local job_id = vim.fn.jobstart({ "sh", "-c", cmd })
+
+  vim.defer_fn(function()
+    if vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+      vim.fn.jobstop(job_id)
+      print("Timeout: Program killed.")
+    end
+  end, timeout_ms or 5000) -- 5000 ms = 5 seconds timeout
+end
+
 function M.RunInNewInputOutputWindow()
   -- run execution file
-  os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+  -- os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
+  M.RunWithTimeout(3000)
 
   -- create and change the window
   local out_win = M.CreateInOutWindow()
