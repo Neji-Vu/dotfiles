@@ -16,7 +16,6 @@ return {
         builtin.find_files({
           no_ignore = false,
           hidden = true,
-          root = true,
         })
       end,
       desc = "Lists files in your current working directory, respects .gitignore",
@@ -107,6 +106,16 @@ return {
           ["<C-e>"] = actions.close,
           ["<C-l>"] = actions.preview_scrolling_right,
           ["<C-h>"] = actions.preview_scrolling_left,
+          ["<C-f>"] = function(prompt_bufnr)
+            for i = 1, 3 do
+              actions.move_selection_next(prompt_bufnr)
+            end
+          end,
+          ["<C-b>"] = function(prompt_bufnr)
+            for i = 1, 3 do
+              actions.move_selection_previous(prompt_bufnr)
+            end
+          end,
         },
         n = {
           ["<C-j>"] = actions.move_selection_next,
@@ -117,6 +126,16 @@ return {
           ["<C-e>"] = actions.close,
           ["<C-l>"] = actions.preview_scrolling_right,
           ["<C-h>"] = actions.preview_scrolling_left,
+          ["<C-f>"] = function(prompt_bufnr)
+            for i = 1, 3 do
+              actions.move_selection_next(prompt_bufnr)
+            end
+          end,
+          ["<C-b>"] = function(prompt_bufnr)
+            for i = 1, 3 do
+              actions.move_selection_previous(prompt_bufnr)
+            end
+          end,
         },
       },
     }
@@ -160,16 +179,6 @@ return {
             ["h"] = fb_actions.goto_parent_dir,
             ["/"] = function()
               vim.cmd("startinsert")
-            end,
-            ["<C-f>"] = function(prompt_bufnr)
-              for i = 1, 3 do
-                actions.move_selection_next(prompt_bufnr)
-              end
-            end,
-            ["<C-b>"] = function(prompt_bufnr)
-              for i = 1, 3 do
-                actions.move_selection_previous(prompt_bufnr)
-              end
             end,
           },
         },
