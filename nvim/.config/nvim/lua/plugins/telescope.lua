@@ -16,6 +16,7 @@ return {
         builtin.find_files({
           no_ignore = false,
           hidden = true,
+          root = true,
         })
       end,
       desc = "Lists files in your current working directory, respects .gitignore",
@@ -64,9 +65,9 @@ return {
           respect_gitignore = false,
           hidden = true,
           grouped = true,
-          previewer = false,
+          previewer = true,
+          display_stat = false,
           initial_mode = "normal",
-          layout_config = { height = 40 },
         })
       end,
       desc = "Open File Browser with the path of the current buffer",
@@ -78,18 +79,44 @@ return {
     local fb_actions = require("telescope").extensions.file_browser.actions
 
     opts.defaults = {
-      wrap_results = true,
-      layout_strategy = "horizontal",
-      layout_config = { prompt_position = "top" },
+      wrap_results = false,
+      layout_strategy = "flex",
+      layout_config = {
+        prompt_position = "top",
+        preview_cutoff = 30, -- the cutoff to switch layout direction
+        flex = {
+          flip_columns = 110, -- use horizontal layout if columns >= 100
+        },
+        horizontal = {
+          preview_width = 0.5,
+        },
+        vertical = {
+          preview_height = 0.4,
+          mirror = true,
+        },
+      },
       sorting_strategy = "ascending",
       winblend = 5,
       mappings = {
         i = {
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
+          ["<C-s>"] = actions.select_horizontal,
+          ["<C-v>"] = actions.select_vertical,
+          ["<C-y>"] = actions.select_default,
+          ["<C-e>"] = actions.close,
+          ["<C-l>"] = actions.preview_scrolling_right,
+          ["<C-h>"] = actions.preview_scrolling_left,
         },
         n = {
-          ["q"] = actions.close,
+          ["<C-j>"] = actions.move_selection_next,
+          ["<C-k>"] = actions.move_selection_previous,
+          ["<C-s>"] = actions.select_horizontal,
+          ["<C-v>"] = actions.select_vertical,
+          ["<C-y>"] = actions.select_default,
+          ["<C-e>"] = actions.close,
+          ["<C-l>"] = actions.preview_scrolling_right,
+          ["<C-h>"] = actions.preview_scrolling_left,
         },
       },
     }
@@ -98,13 +125,31 @@ return {
         theme = "ivy",
         initial_mode = "normal",
         layout_config = {
-          preview_cutoff = 9999,
+          preview_cutoff = 10,
         },
       },
     }
+
     opts.extensions = {
       file_browser = {
-        theme = "dropdown",
+        -- theme = "flex",
+        wrap_results = true,
+        layout_strategy = "flex",
+        layout_config = {
+          prompt_position = "top",
+          preview_cutoff = 30, -- the cutoff to switch layout direction
+          flex = {
+            flip_columns = 95, -- use horizontal layout if columns >= 100
+          },
+          horizontal = {
+            preview_width = 0.55,
+          },
+          vertical = {
+            preview_height = 0.4,
+            mirror = true,
+          },
+        },
+        sorting_strategy = "ascending",
         -- disables netrw and use telescope-file-browser in its place
         hijack_netrw = true,
         mappings = {
@@ -116,18 +161,16 @@ return {
             ["/"] = function()
               vim.cmd("startinsert")
             end,
-            ["<C-u>"] = function(prompt_bufnr)
-              for i = 1, 10 do
-                actions.move_selection_previous(prompt_bufnr)
-              end
-            end,
-            ["<C-d>"] = function(prompt_bufnr)
-              for i = 1, 10 do
+            ["<C-f>"] = function(prompt_bufnr)
+              for i = 1, 3 do
                 actions.move_selection_next(prompt_bufnr)
               end
             end,
-            ["<PageUp>"] = actions.preview_scrolling_up,
-            ["<PageDown>"] = actions.preview_scrolling_down,
+            ["<C-b>"] = function(prompt_bufnr)
+              for i = 1, 3 do
+                actions.move_selection_previous(prompt_bufnr)
+              end
+            end,
           },
         },
       },
