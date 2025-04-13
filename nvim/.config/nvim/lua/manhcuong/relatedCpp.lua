@@ -58,25 +58,27 @@ end
 
 function M.RunWithoutInputFile()
   -- File is not saved
-  if vim.bo.modified then
-    -- A command to make the output folder holding the executable files
-    os.execute(M.MakeDirOSCmd())
-    vim.cmd("w")
+  -- if vim.bo.modified then
 
-    -- build and show output to message
-    vim.fn.jobstart(M.BuildCppFileInOS(), {
-      on_exit = function(_, code)
-        if code == 0 then
-          print("✅ Build successful!")
-          M.RunInNewWindow()
-        else
-          print("❌ Build failed!")
-        end
-      end,
-    })
-  else
-    M.RunInNewWindow()
-  end
+  -- A command to make the output folder holding the executable files
+  os.execute(M.MakeDirOSCmd())
+  vim.cmd("w")
+
+  -- build and show output to message
+  vim.fn.jobstart(M.BuildCppFileInOS(), {
+    on_exit = function(_, code)
+      if code == 0 then
+        print("✅ Build successful!")
+        M.RunInNewWindow()
+      else
+        print("❌ Build failed!")
+      end
+    end,
+  })
+
+  -- else
+  --   M.RunInNewWindow()
+  -- end
 end
 
 function M.CreateInOutWindow()
@@ -121,24 +123,7 @@ function M.CreateInOutWindow()
   return keep_height_output_win_id -- return win_id of output window
 end
 
-function M.RunWithTimeout(timeout_ms)
-  local cmd = "./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt"
-
-  local job_id = vim.fn.jobstart({ "sh", "-c", cmd })
-
-  vim.defer_fn(function()
-    if vim.fn.jobwait({ job_id }, 0)[1] == -1 then
-      vim.fn.jobstop(job_id)
-      print("Timeout: Program killed.")
-    end
-  end, timeout_ms or 5000) -- 5000 ms = 5 seconds timeout
-end
-
-function M.RunInNewInputOutputWindow()
-  -- run execution file
-  -- os.execute("./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt")
-  M.RunWithTimeout(3000)
-
+function M.ShowResult()
   -- create and change the window
   local out_win = M.CreateInOutWindow()
 
@@ -151,28 +136,50 @@ function M.RunInNewInputOutputWindow()
   vim.api.nvim_set_current_win(current_win) -- return to previous window
 end
 
+function M.RunInNewInputOutputWindowAndTimeout(timeout_ms)
+  -- run execution file
+  local cmd = "./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt"
+
+  local job_id = vim.fn.jobstart({ "sh", "-c", cmd }, {
+    on_exit = function(_, code)
+      if code == 0 then
+        M.ShowResult()
+      end
+    end,
+  })
+
+  vim.defer_fn(function()
+    if vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+      vim.fn.jobstop(job_id)
+      print("Timeout: Program killed.")
+    end
+  end, timeout_ms or 5000) -- 5000 ms = 5 seconds timeout
+end
+
 function M.RunWithInputFile()
   -- file exists
   if vim.fn.filereadable("output/input.txt") == 1 then
-    -- File is not saved
-    if vim.bo.modified then
-      -- Split window to show the output of build result
-      vim.cmd("w")
+    -- -- File is not saved
+    -- if vim.bo.modified then
 
-      -- build and show output to message
-      vim.fn.jobstart(M.BuildCppFileInOS(), {
-        on_exit = function(_, code)
-          if code == 0 then
-            print("✅ Build successful!")
-            M.RunInNewInputOutputWindow()
-          else
-            print("❌ Build failed!")
-          end
-        end,
-      })
-    else
-      M.RunInNewInputOutputWindow()
-    end
+    -- Split window to show the output of build result
+    vim.cmd("w")
+
+    -- build and show output to message
+    vim.fn.jobstart(M.BuildCppFileInOS(), {
+      on_exit = function(_, code)
+        if code == 0 then
+          print("✅ Build successful!")
+          M.RunInNewInputOutputWindowAndTimeout(3000)
+        else
+          print("❌ Build failed!")
+        end
+      end,
+    })
+
+    -- else
+    --   M.RunInNewInputOutputWindowAndTimeout(3000)
+    -- end
   else
     -- does not exist
     print("Input file does not exist!")
