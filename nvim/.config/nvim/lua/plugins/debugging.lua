@@ -62,7 +62,10 @@ return {
         cwd = vim.fn.expand("%:p:h"),
         stopOnEntry = false,
         terminal = "integrated",
-        stdio = { myfunc.check_input_file(), nil, nil },
+        stdio = function()
+          local input = myfunc.check_input_file()
+          return { input, nil, nil }
+        end,
         preLaunchTask = function()
           os.execute(require("manhcuong.relatedCpp").MakeDirOSCmd())
           vim.cmd("w")

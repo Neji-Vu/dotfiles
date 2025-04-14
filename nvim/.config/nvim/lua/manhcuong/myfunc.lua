@@ -19,10 +19,8 @@ end
 
 function M.check_input_file()
   local input_file = vim.fn.expand("%:p:h") .. "/output/input.txt"
-  local file = io.open(input_file, "r")
 
-  if file then
-    file:close()
+  if vim.fn.filereadable(input_file) == 1 then
     return input_file
   else
     return nil
