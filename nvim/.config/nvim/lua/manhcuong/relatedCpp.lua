@@ -2,29 +2,38 @@ local M = {}
 
 local myfunc = require("manhcuong.myfunc")
 
+local function get_current_file()
+  return vim.fn.expand("%:p")
+end
+
+local function get_executable_file()
+  return vim.fn.expand("%:p:h") .. "/output/" .. vim.fn.expand("%:t:r")
+end
+
+local function get_output_dir()
+  return vim.fn.expand("%:p:h") .. "/output"
+end
+
+------------------------------------------------------------------------
+
 function M.MakeDirOSCmd()
   -- A command to make the output folder holding the executable files
   local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
   local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
-  return string.format("mkdir %s output > %s", flag, suppress)
+  return string.format("mkdir %s %s > %s", flag, get_output_dir(), suppress)
 end
 
 function M.BuildCppFileInVim()
-  local filename = vim.fn.expand("%")
-  local out_path = "output/" .. vim.fn.expand("%:r")
   -- g++ -o output/test test.cpp -std=c++17
-  return string.format("g++ -o %s %s -std=c++17", out_path, filename)
+  return string.format("g++ -o %s %s -std=c++17", get_executable_file(), get_current_file())
 end
 
 function M.BuildCppFileInOS()
-  local filename = vim.fn.expand("%")
-  local out_path = "output/" .. vim.fn.expand("%:r")
-
   return {
     "g++",
     "-o",
-    out_path,
-    filename,
+    get_executable_file(),
+    get_current_file(),
     "-std=c++17",
   }
 end
@@ -34,7 +43,7 @@ end
 function M.RunInNewWindow()
   -- Split window to show the output of build result
   vim.cmd("split")
-  vim.cmd("te ./output/%:r")
+  vim.cmd("te" .. get_executable_file())
 
   -- change the window to insert mode to enter input
   vim.api.nvim_feedkeys("i", "n", false)
@@ -105,6 +114,7 @@ function M.CreateInOutWindow()
       vim.api.nvim_set_current_win(win_output)
       keep_height_output_win_id = vim.api.nvim_get_current_win()
       vim.cmd("vs output/input.txt")
+      -- exchange the input and output windows
       vim.cmd("wincmd x")
     end
   else
