@@ -6,33 +6,49 @@ local function get_current_file()
   return vim.fn.expand("%:p")
 end
 
-local function get_executable_file()
+local function get_exec_file_full_path()
   return vim.fn.expand("%:p:h") .. "/output/" .. vim.fn.expand("%:t:r")
+end
+
+local function get_exec_file_rel_path()
+  if vim.fn.expand("%:p:h") == vim.fn.getcwd() then
+    return "/output/" .. vim.fn.expand("%:t:r")
+  else
+    return "/" .. vim.fn.expand("%:h") .. "/output/" .. vim.fn.expand("%:t:r")
+  end
 end
 
 local function get_output_dir()
   return vim.fn.expand("%:p:h") .. "/output"
 end
 
+local function get_input_file()
+  return vim.fn.expand("%:p:h") .. "/output/input.txt"
+end
+
+local function get_output_file()
+  return vim.fn.expand("%:p:h") .. "/output/output.txt"
+end
+
 ------------------------------------------------------------------------
 
-function M.MakeDirOSCmd()
+local function MakeDirOSCmd()
   -- A command to make the output folder holding the executable files
   local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
   local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
   return string.format("mkdir %s %s > %s", flag, get_output_dir(), suppress)
 end
 
-function M.BuildCppFileInVim()
+local function BuildCppFileInVim()
   -- g++ -o output/test test.cpp -std=c++17
-  return string.format("g++ -o %s %s -std=c++17", get_executable_file(), get_current_file())
+  return string.format("g++ -o %s %s -std=c++17", get_exec_file_full_path(), get_current_file())
 end
 
-function M.BuildCppFileInOS()
+local function BuildCppFileInOS()
   return {
     "g++",
     "-o",
-    get_executable_file(),
+    get_exec_file_full_path(),
     get_current_file(),
     "-std=c++17",
   }
@@ -40,45 +56,45 @@ end
 
 ------------------------------------------------------------------------
 
-function M.RunInNewWindow()
+local function RunInNewWindow()
   -- Split window to show the output of build result
   vim.cmd("split")
-  vim.cmd("te" .. get_executable_file())
+  vim.cmd("te ." .. get_exec_file_rel_path())
 
   -- change the window to insert mode to enter input
   vim.api.nvim_feedkeys("i", "n", false)
 end
 
-function M.BuildInNewWindow()
+local function BuildInNewWindow()
   -- A command to make the output folder holding the executable files
-  os.execute(M.MakeDirOSCmd())
+  os.execute(MakeDirOSCmd())
 
   -- Split window to show the output of build result
   vim.cmd("w")
   vim.cmd("split")
 
   -- Build cpp file in the new window
-  local gcc_cmd = string.format("te %s", M.BuildCppFileInVim())
+  local gcc_cmd = string.format("te %s", BuildCppFileInVim())
   vim.cmd(gcc_cmd)
 
   -- change the window to insert mode to enter input
   -- vim.api.nvim_feedkeys("i", "n", false)
 end
 
-function M.RunWithoutInputFile()
+local function RunWithoutInputFile()
   -- File is not saved
   -- if vim.bo.modified then
 
   -- A command to make the output folder holding the executable files
-  os.execute(M.MakeDirOSCmd())
+  os.execute(MakeDirOSCmd())
   vim.cmd("w")
 
   -- build and show output to message
-  vim.fn.jobstart(M.BuildCppFileInOS(), {
+  vim.fn.jobstart(BuildCppFileInOS(), {
     on_exit = function(_, code)
       if code == 0 then
         print("✅ Build successful!")
-        M.RunInNewWindow()
+        RunInNewWindow()
       else
         print("❌ Build failed!")
       end
@@ -86,14 +102,17 @@ function M.RunWithoutInputFile()
   })
 
   -- else
-  --   M.RunInNewWindow()
+  --   RunInNewWindow()
   -- end
 end
 
-function M.CreateInOutWindow()
+local function CreateInOutWindow()
   -- show the input and output file
-  local exists_input, win_input = myfunc.is_file_open_in_window("output/input.txt")
-  local exists_output, win_output = myfunc.is_file_open_in_window("output/output.txt")
+  local input_file_path = get_input_file()
+  local output_file_path = get_output_file()
+
+  local exists_input, win_input = myfunc.is_file_open_in_window(input_file_path)
+  local exists_output, win_output = myfunc.is_file_open_in_window(output_file_path)
   local keep_height_output_win_id = vim.api.nvim_get_current_win()
 
   if exists_input or exists_output then
@@ -105,7 +124,7 @@ function M.CreateInOutWindow()
     -- exist input window
     if exists_input and win_input ~= nil then
       vim.api.nvim_set_current_win(win_input)
-      vim.cmd("vs output/output.txt")
+      vim.cmd("vs " .. output_file_path)
       keep_height_output_win_id = vim.api.nvim_get_current_win()
     end
 
@@ -113,14 +132,14 @@ function M.CreateInOutWindow()
     if exists_output and win_output ~= nil then
       vim.api.nvim_set_current_win(win_output)
       keep_height_output_win_id = vim.api.nvim_get_current_win()
-      vim.cmd("vs output/input.txt")
+      vim.cmd("vs " .. input_file_path)
       -- exchange the input and output windows
       vim.cmd("wincmd x")
     end
   else
     -- no window exists
-    vim.cmd("sp output/input.txt")
-    vim.cmd("vs output/output.txt")
+    vim.cmd("sp " .. input_file_path)
+    vim.cmd("vs " .. output_file_path)
     keep_height_output_win_id = vim.api.nvim_get_current_win()
   end
 
@@ -133,9 +152,9 @@ function M.CreateInOutWindow()
   return keep_height_output_win_id -- return win_id of output window
 end
 
-function M.ShowResult()
+local function ShowResult()
   -- create and change the window
-  local out_win = M.CreateInOutWindow()
+  local out_win = CreateInOutWindow()
 
   -- reload the content of output window
   local current_win = vim.api.nvim_get_current_win()
@@ -146,14 +165,14 @@ function M.ShowResult()
   vim.api.nvim_set_current_win(current_win) -- return to previous window
 end
 
-function M.RunInNewInputOutputWindowAndTimeout(timeout_ms)
+local function RunInNewInputOutputWindowAndTimeout(timeout_ms)
   -- run execution file
-  local cmd = "./output/" .. vim.fn.expand("%:r") .. " < output/input.txt > output/output.txt"
+  local cmd = "." .. get_exec_file_rel_path() .. " < " .. get_input_file() .. " > " .. get_output_file()
 
   local job_id = vim.fn.jobstart({ "sh", "-c", cmd }, {
     on_exit = function(_, code)
       if code == 0 then
-        M.ShowResult()
+        ShowResult()
       end
     end,
   })
@@ -166,9 +185,9 @@ function M.RunInNewInputOutputWindowAndTimeout(timeout_ms)
   end, timeout_ms or 5000) -- 5000 ms = 5 seconds timeout
 end
 
-function M.RunWithInputFile()
+local function RunWithInputFile()
   -- file exists
-  if vim.fn.filereadable("output/input.txt") == 1 then
+  if vim.fn.filereadable(get_input_file()) == 1 then
     -- -- File is not saved
     -- if vim.bo.modified then
 
@@ -176,11 +195,11 @@ function M.RunWithInputFile()
     vim.cmd("w")
 
     -- build and show output to message
-    vim.fn.jobstart(M.BuildCppFileInOS(), {
+    vim.fn.jobstart(BuildCppFileInOS(), {
       on_exit = function(_, code)
         if code == 0 then
           print("✅ Build successful!")
-          M.RunInNewInputOutputWindowAndTimeout(3000)
+          RunInNewInputOutputWindowAndTimeout(3000)
         else
           print("❌ Build failed!")
         end
@@ -188,14 +207,14 @@ function M.RunWithInputFile()
     })
 
     -- else
-    --   M.RunInNewInputOutputWindowAndTimeout(3000)
+    --   RunInNewInputOutputWindowAndTimeout(3000)
     -- end
   else
     -- does not exist
     print("Input file does not exist!")
 
     -- os.execute("touch output/input.txt")
-    vim.cmd("sp output/input.txt")
+    vim.cmd("sp" .. get_input_file())
     vim.cmd("resize 12")
   end
 end
@@ -204,17 +223,17 @@ end
 
 function M.BuildKeymap()
   vim.keymap.set("n", "<leader>cb", function()
-    M.BuildInNewWindow()
+    BuildInNewWindow()
   end, { desc = "Build cpp file", noremap = true, silent = true })
 end
 
 function M.RunKeymap()
   vim.keymap.set("n", "<leader>ce", function()
-    M.RunWithoutInputFile()
+    RunWithoutInputFile()
   end, { desc = "Execute cpp file", noremap = true, silent = true })
 
   vim.keymap.set("n", "<leader>cE", function()
-    M.RunWithInputFile()
+    RunWithInputFile()
   end, { desc = "Execute cpp file with input file", noremap = true, silent = true })
 end
 
