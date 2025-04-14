@@ -59,9 +59,7 @@ return {
             "file"
           )
         end,
-        cwd = function()
-          return vim.fn.expand("%:p:h")
-        end,
+        cwd = vim.fn.expand("%:p:h"),
         stopOnEntry = false,
         terminal = "integrated",
         stdio = { myfunc.check_input_file(), nil, nil },
