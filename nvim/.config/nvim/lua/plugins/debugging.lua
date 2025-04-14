@@ -53,20 +53,21 @@ return {
         type = "codelldb",
         request = "launch",
         program = function()
-          return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/output/" .. vim.fn.expand("%:r"), "file")
+          return vim.fn.input(
+            "Path to executable: ",
+            vim.fn.expand("%:p:h") .. "/output/" .. vim.fn.expand("%:t:r"),
+            "file"
+          )
         end,
-        cwd = "${workspaceFolder}",
+        cwd = vim.fn.expand("%:p:h"),
         stopOnEntry = false,
         terminal = "integrated",
         stdio = { myfunc.check_input_file(), nil, nil },
         preLaunchTask = function()
-          local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
-          local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
-          local dir = string.format("mkdir %s output > %s", flag, suppress)
-          os.execute(dir)
+          os.execute(require("manhcuong.relatedCpp").MakeDirOSCmd())
           vim.cmd("w")
 
-          local compile_cmd = "g++ -g -std=c++17 " .. vim.fn.expand("%") .. " -o output/" .. vim.fn.expand("%:r") -- Modify as needed
+          local compile_cmd = require("manhcuong.relatedCpp").BuildCppFileInVimWithDebugFlag()
           local mess = myfunc.check_input_file() == nil and "No input file - " or ""
           print(mess .. "Compiling: " .. compile_cmd)
           os.execute(compile_cmd)

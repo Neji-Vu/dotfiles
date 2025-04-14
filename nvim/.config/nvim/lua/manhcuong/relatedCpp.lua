@@ -32,11 +32,15 @@ end
 
 ------------------------------------------------------------------------
 
-local function MakeDirOSCmd()
+function M.MakeDirOSCmd()
   -- A command to make the output folder holding the executable files
   local flag = myfunc.os_name() == "Windows" and "-f" or "-p"
   local suppress = myfunc.os_name() == "Windows" and "$null" or "/dev/null"
   return string.format("mkdir %s %s > %s", flag, get_output_dir(), suppress)
+end
+
+function M.BuildCppFileInVimWithDebugFlag()
+  return string.format("g++ -g -std=c++17 %s -o %s", get_current_file(), get_exec_file_full_path())
 end
 
 local function BuildCppFileInVim()
@@ -67,7 +71,7 @@ end
 
 local function BuildInNewWindow()
   -- A command to make the output folder holding the executable files
-  os.execute(MakeDirOSCmd())
+  os.execute(M.MakeDirOSCmd())
 
   -- Split window to show the output of build result
   vim.cmd("w")
@@ -86,7 +90,7 @@ local function RunWithoutInputFile()
   -- if vim.bo.modified then
 
   -- A command to make the output folder holding the executable files
-  os.execute(MakeDirOSCmd())
+  os.execute(M.MakeDirOSCmd())
   vim.cmd("w")
 
   -- build and show output to message

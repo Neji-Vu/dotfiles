@@ -18,7 +18,7 @@ function M.os_name()
 end
 
 function M.check_input_file()
-  local input_file = vim.fn.getcwd() .. "/output/input.txt"
+  local input_file = vim.fn.expand("%:p:h") .. "/output/input.txt"
   local file = io.open(input_file, "r")
 
   if file then
