@@ -196,8 +196,14 @@ end
 local function RunWithInputFile()
   -- file exists
   if vim.fn.filereadable(get_input_file()) == 1 then
-    -- -- File is not saved
-    -- if vim.bo.modified then
+    local exists_input, win_input = myfunc.is_file_open_in_window(get_input_file())
+
+    -- check the current window
+    -- if it's in input win then save and move to main win (cpp win)
+    if exists_input and win_input ~= nil then
+      vim.cmd("w")
+      vim.cmd("wincmd k")
+    end
 
     -- Split window to show the output of build result
     vim.cmd("w")
@@ -213,10 +219,6 @@ local function RunWithInputFile()
         end
       end,
     })
-
-    -- else
-    --   RunInNewInputOutputWindowAndTimeout(3000)
-    -- end
   else
     -- does not exist
     print("Input file does not exist!")
