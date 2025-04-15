@@ -60,4 +60,14 @@ function M.is_file_open_in_window(filepath)
   return false, nil -- file not open in any window
 end
 
+function M.find_cpp_buffer()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name:match("%.cpp$") then
+      return bufnr
+    end
+  end
+  error("No .cpp buffer found")
+end
+
 return M
