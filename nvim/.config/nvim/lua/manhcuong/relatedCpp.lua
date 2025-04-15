@@ -2,32 +2,44 @@ local M = {}
 
 local myfunc = require("manhcuong.myfunc")
 
-local function get_current_file()
-  return vim.fn.expand("%:p")
+local function get_cpp_file_path()
+  local cpp_buf = myfunc.find_cpp_buffer()
+  return vim.api.nvim_buf_get_name(cpp_buf)
 end
 
-local function get_exec_file_full_path()
-  return vim.fn.expand("%:p:h") .. "/output/" .. vim.fn.expand("%:t:r")
+local function get_current_file(file)
+  return file or vim.fn.expand("%:p")
 end
 
-local function get_exec_file_rel_path()
-  if vim.fn.expand("%:p:h") == vim.fn.getcwd() then
-    return "/output/" .. vim.fn.expand("%:t:r")
+local function get_exec_file_full_path(file)
+  file = file or vim.fn.expand("%:p")
+  return vim.fn.fnamemodify(file, ":h") .. "/output/" .. vim.fn.fnamemodify(file, ":t:r")
+end
+
+local function get_exec_file_rel_path(file)
+  file = file or vim.fn.expand("%:p")
+  local cur_dir = vim.fn.fnamemodify(file, ":h")
+
+  if cur_dir == vim.fn.getcwd() then
+    return "/output/" .. vim.fn.fnamemodify(file, ":t:r")
   else
-    return "/" .. vim.fn.expand("%:h") .. "/output/" .. vim.fn.expand("%:t:r")
+    return "/" .. vim.fn.fnamemodify(file, ":.:h") .. "/output/" .. vim.fn.fnamemodify(file, ":t:r")
   end
 end
 
-local function get_output_dir()
-  return vim.fn.expand("%:p:h") .. "/output"
+local function get_output_dir(file)
+  file = file or vim.fn.expand("%:p")
+  return vim.fn.fnamemodify(file, ":h") .. "/output"
 end
 
-local function get_input_file()
-  return vim.fn.expand("%:p:h") .. "/output/input.txt"
+local function get_input_file(file)
+  file = file or vim.fn.expand("%:p")
+  return vim.fn.fnamemodify(file, ":h") .. "/output/input.txt"
 end
 
-local function get_output_file()
-  return vim.fn.expand("%:p:h") .. "/output/output.txt"
+local function get_output_file(file)
+  file = file or vim.fn.expand("%:p")
+  return vim.fn.fnamemodify(file, ":h") .. "/output/output.txt"
 end
 
 ------------------------------------------------------------------------
@@ -49,11 +61,12 @@ local function BuildCppFileInVim()
 end
 
 local function BuildCppFileInOS()
+  local cpp_file_path = get_cpp_file_path()
   return {
     "g++",
     "-o",
-    get_exec_file_full_path(),
-    get_current_file(),
+    get_exec_file_full_path(cpp_file_path),
+    get_current_file(cpp_file_path),
     "-std=c++17",
   }
 end
@@ -111,9 +124,11 @@ local function RunWithoutInputFile()
 end
 
 local function CreateInOutWindow()
+  local cpp_file_path = get_cpp_file_path()
+
   -- show the input and output file
-  local input_file_path = get_input_file()
-  local output_file_path = get_output_file()
+  local input_file_path = get_input_file(cpp_file_path)
+  local output_file_path = get_output_file(cpp_file_path)
 
   local exists_input, win_input = myfunc.is_file_open_in_window(input_file_path)
   local exists_output, win_output = myfunc.is_file_open_in_window(output_file_path)
@@ -174,8 +189,15 @@ local function ShowResult()
 end
 
 local function RunInNewInputOutputWindowAndTimeout(timeout_ms)
+  local cpp_file_path = get_cpp_file_path()
+
   -- run execution file
-  local cmd = "." .. get_exec_file_rel_path() .. " < " .. get_input_file() .. " > " .. get_output_file()
+  local cmd = "."
+    .. get_exec_file_rel_path(cpp_file_path)
+    .. " < "
+    .. get_input_file(cpp_file_path)
+    .. " > "
+    .. get_output_file(cpp_file_path)
 
   local job_id = vim.fn.jobstart({ "sh", "-c", cmd }, {
     on_exit = function(_, code)
@@ -194,10 +216,21 @@ local function RunInNewInputOutputWindowAndTimeout(timeout_ms)
 end
 
 local function RunWithInputFile()
+  local cpp_file_path = get_cpp_file_path()
+
   -- file exists
-  if vim.fn.filereadable(get_input_file()) == 1 then
+  if vim.fn.filereadable(get_input_file(cpp_file_path)) == 1 then
     -- -- File is not saved
     -- if vim.bo.modified then
+
+    local exists_input, win_input = myfunc.is_file_open_in_window(get_input_file(cpp_file_path))
+
+    -- check the current window
+    -- if it's in input win then save and move to main win (cpp win)
+    if exists_input and win_input ~= nil then
+      vim.cmd("w")
+      vim.cmd("wincmd k")
+    end
 
     -- Split window to show the output of build result
     vim.cmd("w")
@@ -222,7 +255,7 @@ local function RunWithInputFile()
     print("Input file does not exist!")
 
     -- os.execute("touch output/input.txt")
-    vim.cmd("sp" .. get_input_file())
+    vim.cmd("sp" .. get_input_file(cpp_file_path))
     vim.cmd("resize 12")
   end
 end
