@@ -121,7 +121,11 @@ local function CreateInOutWindow()
 
   if exists_input or exists_output then
     -- exists input and output window, do nothing
-    if exists_output and exists_input then
+    if exists_output and exists_input then -- keep the input/output window height fixed
+      vim.wo[win_output].winfixheight = true
+      if win_output ~= nil then
+        vim.api.nvim_win_set_height(win_output, 12)
+      end
       return win_output
     end
 
