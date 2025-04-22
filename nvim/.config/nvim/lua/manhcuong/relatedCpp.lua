@@ -76,6 +76,8 @@ end
 local function RunInNewWindow()
   -- Split window to show the output of build result
   vim.cmd("split")
+
+  vim.notify("te ." .. get_exec_file_rel_path())
   vim.cmd("te ." .. get_exec_file_rel_path())
 
   -- change the window to insert mode to enter input
@@ -92,6 +94,7 @@ local function BuildInNewWindow()
 
   -- Build cpp file in the new window
   local gcc_cmd = string.format("te %s", BuildCppFileInVim())
+  vim.notify(gcc_cmd)
   vim.cmd(gcc_cmd)
 
   -- change the window to insert mode to enter input
@@ -110,10 +113,10 @@ local function RunWithoutInputFile()
   vim.fn.jobstart(BuildCppFileInOS(), {
     on_exit = function(_, code)
       if code == 0 then
-        print("✅ Build successful!")
+        vim.notify("✅ Build successful!")
         RunInNewWindow()
       else
-        print("❌ Build failed!")
+        vim.notify("❌ Build failed!")
       end
     end,
   })
@@ -198,6 +201,7 @@ local function RunInNewInputOutputWindowAndTimeout(timeout_ms)
     .. get_input_file(cpp_file_path)
     .. " > "
     .. get_output_file(cpp_file_path)
+  vim.notify(cmd)
 
   local job_id = vim.fn.jobstart({ "sh", "-c", cmd }, {
     on_exit = function(_, code)
@@ -210,7 +214,7 @@ local function RunInNewInputOutputWindowAndTimeout(timeout_ms)
   vim.defer_fn(function()
     if vim.fn.jobwait({ job_id }, 0)[1] == -1 then
       vim.fn.jobstop(job_id)
-      print("Timeout: Program killed.")
+      vim.notify("Timeout: Program killed.")
     end
   end, timeout_ms or 5000) -- 5000 ms = 5 seconds timeout
 end
@@ -239,10 +243,10 @@ local function RunWithInputFile()
     vim.fn.jobstart(BuildCppFileInOS(), {
       on_exit = function(_, code)
         if code == 0 then
-          print("✅ Build successful!")
+          vim.notify("✅ Build successful!")
           RunInNewInputOutputWindowAndTimeout(3000)
         else
-          print("❌ Build failed!")
+          vim.notify("❌ Build failed!")
         end
       end,
     })
@@ -252,7 +256,7 @@ local function RunWithInputFile()
     -- end
   else
     -- does not exist
-    print("Input file does not exist!")
+    vim.notify("Input file does not exist!")
 
     -- os.execute("touch output/input.txt")
     vim.cmd("sp" .. get_input_file(cpp_file_path))
