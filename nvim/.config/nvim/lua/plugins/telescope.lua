@@ -41,10 +41,10 @@ return {
       desc = "Lists open buffers",
     },
     {
-      ";s",
+      ";m",
       function()
         local builtin = require("telescope.builtin")
-        builtin.treesitter()
+        builtin.lsp_document_symbols({ symbols = "function" })
       end,
       desc = "Lists Function names, variables, from Treesitter",
     },
