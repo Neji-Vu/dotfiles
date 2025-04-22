@@ -44,7 +44,10 @@ return {
       ";m",
       function()
         local builtin = require("telescope.builtin")
-        builtin.lsp_document_symbols({ symbols = "function" })
+        builtin.lsp_document_symbols({
+          symbols = "function",
+          initial_mode = "normal",
+        })
       end,
       desc = "Lists Function names, variables, from Treesitter",
     },
