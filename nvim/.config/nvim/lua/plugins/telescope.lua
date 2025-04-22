@@ -10,7 +10,7 @@ return {
   keys = {
     -- List all files in the current directory, except files listed in .gitignore
     {
-      ";f",
+      ";;",
       function()
         local builtin = require("telescope.builtin")
         builtin.find_files({
@@ -41,6 +41,14 @@ return {
       desc = "Lists open buffers",
     },
     {
+      ";s",
+      function()
+        local builtin = require("telescope.builtin")
+        builtin.treesitter()
+      end,
+      desc = "Lists Function names, variables, from Treesitter",
+    },
+    {
       -- Find helps of vim
       ";h",
       function()
@@ -50,7 +58,7 @@ return {
       desc = "Lists available help tags and opens a new window with the relevant help info on <cr>",
     },
     {
-      "sf",
+      ";f",
       function()
         local telescope = require("telescope")
 
