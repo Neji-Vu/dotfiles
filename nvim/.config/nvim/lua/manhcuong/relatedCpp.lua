@@ -266,6 +266,25 @@ end
 
 ------------------------------------------------------------------------
 
+local function EditInputFile()
+  local cpp_file_path = get_cpp_file_path()
+
+  -- show the input and output file
+  local input_file_path = get_input_file(cpp_file_path)
+
+  local exists_input, win_input = myfunc.is_file_open_in_window(input_file_path)
+
+  if exists_input and win_input ~= nil then
+    vim.api.nvim_set_current_win(win_input)
+    vim.cmd("resize 12")
+  else
+    vim.cmd("sp" .. get_input_file(cpp_file_path))
+    vim.cmd("resize 12")
+  end
+end
+
+------------------------------------------------------------------------
+
 function M.BuildKeymap()
   vim.keymap.set("n", "<leader>cb", function()
     BuildInNewWindow()
@@ -280,6 +299,12 @@ function M.RunKeymap()
   vim.keymap.set("n", "<leader>cE", function()
     RunWithInputFile()
   end, { desc = "Execute cpp file with input file", noremap = true, silent = true })
+end
+
+function M.EditInputFileKeymap()
+  vim.keymap.set("n", "<leader>ci", function()
+    EditInputFile()
+  end, { desc = "Edit Input File", noremap = true, silent = true })
 end
 
 ------------------------------------------------------------------------

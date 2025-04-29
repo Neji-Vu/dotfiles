@@ -10,6 +10,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     cpp.BuildKeymap() -- press <leader>cb to build cpp file
     cpp.RunKeymap() -- press <leader>ce or <leader>cE to run cpp file
+    cpp.EditInputFileKeymap() -- press <leader>ci to edit input file
   end,
 })
 
