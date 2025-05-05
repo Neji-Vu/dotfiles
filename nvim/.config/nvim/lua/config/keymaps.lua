@@ -30,8 +30,8 @@ keymap.set("n", "so", function()
 end) -- close all other windows and their buffers
 
 -- Resize windows
-keymap.set("n", "<C-j>", "<cmd>resize +2<cr>")
-keymap.set("n", "<C-k>", "<cmd>resize -2<cr>")
+keymap.set("n", "SJ", "<cmd>resize +2<cr>")
+keymap.set("n", "SK", "<cmd>resize -2<cr>")
 
 -- move selected lines
 keymap.set("n", "\\j", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
