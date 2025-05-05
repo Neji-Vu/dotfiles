@@ -29,6 +29,10 @@ keymap.set("n", "so", function()
   require("manhcuong.myfunc").close_wins_and_bufs()
 end) -- close all other windows and their buffers
 
+-- Resize windows
+keymap.set("n", "<C-j>", "<cmd>resize +2<cr>")
+keymap.set("n", "<C-k>", "<cmd>resize -2<cr>")
+
 -- move selected lines
 keymap.set("n", "\\j", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
 keymap.set("n", "\\k", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
