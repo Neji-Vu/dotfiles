@@ -2,6 +2,11 @@ after-login-command = []
 
 after-startup-command = []
 
+exec-on-workspace-change = [
+    '/bin/bash', '-c',
+    '~/.config/aerospace/pip-move.sh'
+]
+
 start-at-login = true
 
 enable-normalization-flatten-containers = true
@@ -127,13 +132,19 @@ run = "move-node-to-workspace C"
 if.app-id = 'com.apple.Safari'
 run = "move-node-to-workspace B"
 
+# [[on-window-detected]]
+# if.app-id = 'com.microsoft.edgemac'
+# if.window-title-regex-substring = 'Picture in Picture'
+# # check-further-callbacks = true
+# run = [ 'layout floating', 'move-node-to-workspace B' ]
+
 [[on-window-detected]]
 if.app-id = 'com.microsoft.edgemac'
 run = "move-node-to-workspace B"
 
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
-run = "move-node-to-workspace D"
+run = [ 'layout floating', 'move-node-to-workspace D' ]
 
 [[on-window-detected]]
 if.app-id = 'notion.id'
